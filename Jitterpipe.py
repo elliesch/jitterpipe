@@ -167,8 +167,8 @@ def jitterpipe(dirpath, psrname, NANOdir, MJDint, clearoutput=True, mkfiles=True
         call("cp %sfolded/*cf %scal/." %(DIR, DIR))
         call("pam -m -T %scal/*cf" %DIR)
 
-        printer("Generating calibrator database")
-        call("pac -u %sfolded/.fcal -T -w -k %scal/caldatabase.txt -p %scal/" %(DIR, DIR, DIR))
+        #printer("Generating calibrator database")
+        #call("pac -w -k %scal/caldatabase.txt -p %scal/" %(DIR, DIR, DIR))
         
 #QUESTION FOR SCOTT        
         #This comes from IPTA 2010, Day 2: Intro to PSRCHIVE
@@ -178,7 +178,7 @@ def jitterpipe(dirpath, psrname, NANOdir, MJDint, clearoutput=True, mkfiles=True
         #call("fluxcal -f -c %scal/*.fcal -d %scal/caldatabase.txt" %(DIR, DIR))
         
         printer("Calibrating fits files")
-        call("pac -Tax -d %scal/caldatabase.txt %sfolded/*rf" %(DIR, DIR)) #pac creates cal files along with database file
+        call("pac -Tx %sfolded/*rf" %DIR) #pac creates cal files along with database file
         printer("Calibration complete")
 
         printer("Moving calibrated files")
