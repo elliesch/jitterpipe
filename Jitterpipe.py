@@ -112,13 +112,14 @@ def jitterpipe(dirpath, psrname, NANOdir, MJDint, clearoutput=True, mkfiles=True
     ##and renames to .cf and .rf
         
     if FILEFLAG:
-        #printer("Tscrunching fits files")
-        #call("mkdir %sfits" %DIR)
-        #call("pam -u %sfits -e tfits --settsub 10 %s/*fits" %(DIR, NANOdir))
-	#letter=psrname[0]
-        #call("rename _ - %sfits/*_????+*.tfits" %DIR)
-        #call("rename _ _%s %sfits/*_????+*.tfits" %(letter, DIR))
-        #call("rename - _ %sfits/*_%s????+*.tfits" %(DIR, letter))
+        printer("Tscrunching fits files")
+        call("mkdir %sfits" %DIR)
+        MJDarg='*' + str(MJDint) + '*'
+        call("pam -u %sfits -e tfits --settsub 10 %s/%s.fits" %(DIR, NANOdir,MJDarg))
+	letter=psrname[0]
+        call("rename _ - %sfits/*_????+*.tfits" %DIR)
+        call("rename _ _%s %sfits/*_????+*.tfits" %(letter, DIR))
+        call("rename - _ %sfits/*_%s????+*.tfits" %(DIR, letter))
 
         printer("Adding separated pulses into cf and rf files")
         
