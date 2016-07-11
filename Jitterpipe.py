@@ -218,12 +218,12 @@ def jitterpipe(dirpath, psrname, NANOdir, MJDint, clearoutput=True, mkfiles=True
         printer("Making 10s-->80s, 256-->8 channel files")
 
 #         call("pam -e zap80F8 -t 8 -f 32 %szap/*zap" %DIR)
-        call("pam -e zap80F8 --settsub 80 --setnchan 8 %szap/*zap" %DIR)
+        call("pam -e zap80F8 --settsub 80 -f 32 %szap/*zap" %DIR)
 
 #         call("rename .zap80F8 _80F8.zap %szap/*zap80F8" %DIR)
         
         printer("Making 256-->8 channel, no tscrunch files")
-        call("pam -e zapNTF8 --setnchan 8 %szap/*zap" %DIR)
+        call("pam -e zapNTF8 -f 32 %szap/*zap" %DIR)
 #         call("rename .zapNTF8 _NTF8.zap %szap/*zapNTF8" %DIR)  
         
         printer("Splitting complete")
