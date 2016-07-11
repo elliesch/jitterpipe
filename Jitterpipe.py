@@ -51,7 +51,7 @@ def jitterpipe(dirpath, psrname, NANOdir, MJDint, clearoutput=True, mkfiles=True
     import residuals as r #brings in Scott's residuals
     import numpy as np
     import matplotlib.pyplot as plt
-    %matplotlib inline
+    #%matplotlib inline
     import math
 
     OUTPUT_FRONT = "jitterpipe: "
@@ -112,33 +112,43 @@ def jitterpipe(dirpath, psrname, NANOdir, MJDint, clearoutput=True, mkfiles=True
     ##and renames to .cf and .rf
         
     if FILEFLAG:
-        printer("Tscrunching fits files")
-        call("pam -u %sfolded -e tfits --settsub 10 %s/*fits" %(DIR, NANOdir))
-        
+        #printer("Tscrunching fits files")
+        #call("mkdir %sfits" %DIR)
+        #call("pam -u %sfits -e tfits --settsub 10 %s/*fits" %(DIR, NANOdir))
+	#letter=psrname[0]
+        #call("rename _ - %sfits/*_????+*.tfits" %DIR)
+        #call("rename _ _%s %sfits/*_????+*.tfits" %(letter, DIR))
+        #call("rename - _ %sfits/*_%s????+*.tfits" %(DIR, letter))
+
         printer("Adding separated pulses into cf and rf files")
         
         #First separating out the MJDarray to loop over
-        files = sorted(glob.glob("%sfolded/*.tfits" %DIR))
+        files = sorted(glob.glob("%sfits/*.tfits" %DIR))
         rfarray=[]
         cfarray=[]
         for f in files:
-            col=(f.split('_')[4])
+            col=str(f.split('_')[4])
             if col == 'cal':
-                MJD = (f.split('_')[1])
-                Scannum = (f.split('_')[3])
+                MJD = str(f.split('_')[1])
+                Scannum = str(f.split('_')[3])
                 cfarray.append([MJD, Scannum])
             else:
-                MJD = (f.split('_')[1])
-                Scannum = (f.split('_')[3])
-                rfarray.append([MJD, Scannum])
-        
+                MJD = str(f.split('_')[1])
+                Scannum = str(f.split('_')[3])
+		if [MJD, Scannum] not in rfarray:
+                    rfarray.append([MJD, Scannum])
+#        print rfarray
+#        print "##########################"
+#        print cfarray
+
         #Now generating the rf files
         for scan in rfarray:
-            call("psradd -o %sfolded/puppi_%s_%s_%s.11y.rf %sfolded/puppi_%s_%s_%s_????.tfits" 
+            call("psradd -o %sfolded/puppi_%s_%s_%s.11y.rf %sfits/puppi_%s_%s_%s_????.tfits" 
                  %(DIR, scan[0], psrname, scan[1], DIR, scan[0], psrname, scan[1]))
         
+        #Now generating the cf files
         for scan in cfarray:
-            call("psradd -o %sfolded/puppi_%s_%s_%s.11y.cf %sfolded/puppi_%s_%s_%s_cal_????.tfits" 
+            call("psradd -o %sfolded/puppi_%s_%s_%s.11y.cf %sfits/puppi_%s_%s_%s_cal_????.tfits" 
                  %(DIR, scan[0], psrname, scan[1], DIR, scan[0], psrname, scan[1]))
                 
         printer("rf and cf files generated")
@@ -158,14 +168,14 @@ def jitterpipe(dirpath, psrname, NANOdir, MJDint, clearoutput=True, mkfiles=True
         call("pam -m -T %scal/*cf" %DIR)
 
         printer("Generating calibrator database")
-        call("pac -w -k %scal/caldatabase.txt -p %scal/" %(DIR, DIR)) #pac performs calibrations
+        call("pac -u %sfolded/.fcal -T -w -k %scal/caldatabase.txt -p %scal/" %(DIR, DIR, DIR))
         
 #QUESTION FOR SCOTT        
         #This comes from IPTA 2010, Day 2: Intro to PSRCHIVE
         #Make sure to have the fluxcal files in the cal folder
-        printer("Generating flux calibrations")
-        call("cp %sfolded/*fcal %scal/." %(DIR, DIR))
-        call("fluxcal -f -d %scal/caldatabase.txt" %DIR)
+        #printer("Generating flux calibrations")
+        #call("cp %sfolded/*fcal %scal/." %(DIR, DIR))
+        #call("fluxcal -f -c %scal/*.fcal -d %scal/caldatabase.txt" %(DIR, DIR))
         
         printer("Calibrating fits files")
         call("pac -Tax -d %scal/caldatabase.txt %sfolded/*rf" %(DIR, DIR)) #pac creates cal files along with database file
@@ -235,7 +245,7 @@ def jitterpipe(dirpath, psrname, NANOdir, MJDint, clearoutput=True, mkfiles=True
         files = sorted(glob.glob("%szap/*.zapNTF8" %DIR))
         MJDarray=[]
         for f in files:
-            MJD = int(f.split('_')[2])
+            MJD = int(f.split('_')[1])
             if MJD not in MJDarray:
                 MJDarray.append(MJD)
         
@@ -292,7 +302,7 @@ def jitterpipe(dirpath, psrname, NANOdir, MJDint, clearoutput=True, mkfiles=True
             files = sorted(glob.glob("%szap/*.zapNTF8" %DIR))
             MJDarray=[]
             for f in files: 
-                MJD = int(f.split('_')[2])
+                MJD = int(f.split('_')[1])
                 if MJD not in MJDarray:
                     MJDarray.append(MJD)        
         
