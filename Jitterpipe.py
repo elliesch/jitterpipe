@@ -50,7 +50,9 @@ def jitterpipe(dirpath, psrname, NANOdir, MJDint, clearoutput=True, mkfiles=True
 
     import residuals as r #brings in Scott's residuals
     import numpy as np
+    import matplotlib
     import matplotlib.pyplot as plt
+    matplotlib.use('Agg')
     #%matplotlib inline
     import math
 
@@ -138,9 +140,6 @@ def jitterpipe(dirpath, psrname, NANOdir, MJDint, clearoutput=True, mkfiles=True
                 Scannum = str(f.split('_')[3])
 		if [MJD, Scannum] not in rfarray:
                     rfarray.append([MJD, Scannum])
-#        print rfarray
-#        print "##########################"
-#        print cfarray
 
         #Now generating the rf files
         for scan in rfarray:
@@ -163,23 +162,18 @@ def jitterpipe(dirpath, psrname, NANOdir, MJDint, clearoutput=True, mkfiles=True
     ## Setup so the cal and rf files should be in a folder called "folded"
 
     if CALFLAG:
-        printer("Generating pulsar calibrators")
+#QUESTION FOR SCOTT
+        #Should I be fully time scrunching the calibrators and do I need to save a copy of the database?
+        #printer("Generating pulsar calibrators")
         call("mkdir %scal" %DIR)
-        call("cp %sfolded/*cf %scal/." %(DIR, DIR))
-        call("pam -m -T %scal/*cf" %DIR)
+        #call("cp %sfolded/*cf %scal/." %(DIR, DIR))
+        #call("pam -m -T %scal/*cf" %DIR)
 
         #printer("Generating calibrator database")
         #call("pac -w -k %scal/caldatabase.txt -p %scal/" %(DIR, DIR, DIR))
         
-#QUESTION FOR SCOTT        
-        #This comes from IPTA 2010, Day 2: Intro to PSRCHIVE
-        #Make sure to have the fluxcal files in the cal folder
-        #printer("Generating flux calibrations")
-        #call("cp %sfolded/*fcal %scal/." %(DIR, DIR))
-        #call("fluxcal -f -c %scal/*.fcal -d %scal/caldatabase.txt" %(DIR, DIR))
-        
         printer("Calibrating fits files")
-        call("pac -Tx %sfolded/*rf" %DIR) #pac creates cal files along with database file
+        call("pac -Tx %sfolded/*rf -k %scal/caldatabase.txt" %(DIR, DIR)) #pac creates cal files along with database file
         printer("Calibration complete")
 
         printer("Moving calibrated files")
@@ -200,7 +194,7 @@ def jitterpipe(dirpath, psrname, NANOdir, MJDint, clearoutput=True, mkfiles=True
         printer("Removing RFI (this may take awhile)") #paz uses manual and automatic modes for interference excision
                                                        #for lots of files, this crashes due to memory problems
         files = sorted(glob.glob("%scalib/*.calib*" %DIR))
-        for f in files: #first two are summed together - from Michael. 
+        for f in files: 
             call("paz -v -e zap -j 'zap median exp={$off:max-$off:min},zap median' %s" %f) 
             #this should generate zap files 
         call("mkdir %szap" %DIR)
