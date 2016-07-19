@@ -297,14 +297,14 @@ def jitterpipe(dirpath, psrname, NANOdir, MJDint, clearoutput=True, mkfiles=True
 #         call("mv resid2.tmp %sproducts/resid_80F8.tmp" %DIR)
         
 	date = str(MJDint)
-        print "tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_80F8.tim" %(PARFILE, DIR, date, psrname) 
-        #call("tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_80F8.tim" %(PARFILE, DIR, date, psrname) )
-        #call("mv resid2.tmp %sproducts/%s_resid_%s_80F8.tmp" %(DIR, psrname, date))
+#         print "tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_80F8.tim" %(PARFILE, DIR, date, psrname) 
+        call("tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_80F8.tim" %(PARFILE, DIR, date, psrname) )
+        call("mv resid2.tmp %sproducts/%s_resid_%s_80F8.tmp" %(DIR, psrname, date))
 
         #This runs tempo on 10s + 8 channel files, recursively using the daily tim files
-        print "tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_NTF8.tim" %(PARFILE, DIR, date, psrname) 
-        #call("tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_NTF8.tim" %(PARFILE, DIR, date, psrname) )
-        #call("mv resid2.tmp %sproducts/%s_resid_%s_NTF8.tmp" %(DIR, psrname, date))
+#         print "tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_NTF8.tim" %(PARFILE, DIR, date, psrname) 
+        call("tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_NTF8.tim" %(PARFILE, DIR, date, psrname) )
+        call("mv resid2.tmp %sproducts/%s_resid_%s_NTF8.tmp" %(DIR, psrname, date))
         
         printer("Residuals generated")
     
@@ -315,7 +315,7 @@ def jitterpipe(dirpath, psrname, NANOdir, MJDint, clearoutput=True, mkfiles=True
 #        #First Plotting 80s + 8 channel plot
 #        
 #        #Defining the residuals
-#        x=r.read_residuals(filename= DIR + "products/resid_%s_80F8.tmp" %MJDint)
+#        x=r.read_residuals(filename= DIR + "products/%s_resid_%s_80F8.tmp" %(psrname, date))
 #        
 #        #Defining the colormap
 #        from matplotlib.colors import LinearSegmentedColormap
@@ -330,33 +330,32 @@ def jitterpipe(dirpath, psrname, NANOdir, MJDint, clearoutput=True, mkfiles=True
 #        #Creating the plot
 #        fig,ax = plt.subplots(figsize=(17,8))
 #        cax = ax.scatter(x.bary_TOA, x.prefit_sec, c=x.bary_freq, s=20, edgecolor='#262626', linewidth='0.35', cmap=cmap)
-#        ax.set_title('MJD %s, All Frequency Bands, 80s subintervals, 8subchannels' %MJDint, fontsize='16')
+#        ax.set_title('MJD %s, All Frequency Bands, 80s subintervals, 8subchannels' %date, fontsize='16')
 #        ax.set_xlim(MJDint, (MJDint + 1))
 #        ax.set_ylim(-0.00001, 0.00001)
 #        cb=fig.colorbar(cax)
 #        cb.locator = tick_locator
 #        cb.update_ticks()
 #
-#        plt.savefig(DIR + 'products/%s_80s_8chan.png' %psrname)
+#        plt.savefig(DIR + 'products/%s_%s_80s_8chan.png' %(psrname,date))
 #        plt.show()
 #        
 #        #Next Plotting 10s + 8 channel plot
 #        
 #        #Defining the residuals
-#        y=r.read_residuals(filename= DIR + "products/resid_%s_NTF8.tmp" %MJDint)
+#        y=r.read_residuals(filename= DIR + "products/%s_resid_%s_NTF8.tmp" %(psrname, date))
 #        
 #        #Creating the plot
 #        fig,ax = plt.subplots(figsize=(17,8))
 #        cax = ax.scatter(y.bary_TOA, y.prefit_sec, c=y.bary_freq, s=20, edgecolor='#262626', linewidth='0.35', cmap=cmap)
-#        MJDtitle = str(MJDint)
-#        ax.set_title('MJD %s, All Frequency Bands, 10s subintervals, 8subchannels' %MJDtitle, fontsize='16')
+#        ax.set_title('MJD %s, All Frequency Bands, 10s subintervals, 8subchannels' %date, fontsize='16')
 #        ax.set_xlim(MJDint, (MJDint + 1))
 #        ax.set_ylim(-0.00001, 0.00001)
 #        cb=fig.colorbar(cax)
 #        cb.locator = tick_locator
 #        cb.update_ticks()
 #
-#        plt.savefig(DIR + 'products/%s_10s_8chan.png' %psrname)
+#        plt.savefig(DIR + 'products/%s_%s_10s_8chan.png' (%psrname, date))
 #        plt.show()
 #        
 #        printer("Plots generated")
