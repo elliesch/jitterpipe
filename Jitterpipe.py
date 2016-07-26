@@ -297,24 +297,24 @@ def jitterpipe(dirpath, psrname, NANOdir, MJDint, clearoutput=True, mkfiles=True
 #         call("tempo -G -f %s %stiming/master_%s_NANOGrav_11y_80F8.tim " %(PARFILE, DIR, psrname) )
 #         call("mv resid2.tmp %sproducts/resid_80F8.tmp" %DIR)
        
-        print "tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_80F8.tim" %(PARFILE, DIR, date, psrname) 
-#         call("tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_80F8.tim" %(PARFILE, DIR, date, psrname) )
-#         call("mv resid2.tmp %sproducts/%s_resid_%s_80F8.tmp" %(DIR, psrname, date))
+#         print "tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_80F8.tim" %(PARFILE, DIR, date, psrname) 
+        call("(cd %s; tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_80F8.tim)" %(DIR, PARFILE, DIR, date, psrname) )
+        call("mv %sresid2.tmp %sproducts/%s_resid_%s_80F8.tmp" %(DIR, DIR, psrname, date))
 
         #This runs tempo on 40s + 8 channel files, recursively using the daily tim files
-        print "tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_40F8.tim" %(PARFILE, DIR, date, psrname) 
-#         call("tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_40F8.tim" %(PARFILE, DIR, date, psrname) )
-#         call("mv resid2.tmp %sproducts/%s_resid_%s_40F8.tmp" %(DIR, psrname, date))
+#         print "tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_40F8.tim" %(PARFILE, DIR, date, psrname) 
+        call("(cd %s; tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_40F8.tim)" %(DIR, PARFILE, DIR, date, psrname) )
+        call("mv %sresid2.tmp %sproducts/%s_resid_%s_40F8.tmp" %(DIR, DIR, psrname, date))
 
         #This runs tempo on 10s + 8 channel files, recursively using the daily tim files
-        print "tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_20F8.tim" %(PARFILE, DIR, date, psrname) 
-#         call("tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_20F8.tim" %(PARFILE, DIR, date, psrname) )
-#         call("mv resid2.tmp %sproducts/%s_resid_%s_20F8.tmp" %(DIR, psrname, date))
+#         print "tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_20F8.tim" %(PARFILE, DIR, date, psrname) 
+        call("(cd %s; tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_20F8.tim)" %(DIR, PARFILE, DIR, date, psrname) )
+        call("mv %sresid2.tmp %sproducts/%s_resid_%s_20F8.tmp" %(DIR, DIR, psrname, date))
 
         #This runs tempo on 10s + 8 channel files, recursively using the daily tim files
-        print "tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_NTF8.tim" %(PARFILE, DIR, date, psrname) 
-#         call("tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_NTF8.tim" %(PARFILE, DIR, date, psrname) )
-#         call("mv resid2.tmp %sproducts/%s_resid_%s_NTF8.tmp" %(DIR, psrname, date))
+#         print "tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_NTF8.tim" %(PARFILE, DIR, date, psrname) 
+        call("(cd %s; tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_NTF8.tim)" %(DIR, PARFILE, DIR, date, psrname) )
+        call("mv %sresid2.tmp %sproducts/%s_resid_%s_NTF8.tmp" %(DIR, DIR, psrname, date))
         
         printer("Residuals generated")
     
