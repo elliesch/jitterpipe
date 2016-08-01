@@ -125,26 +125,28 @@ def jitterpipe(dirpath, psrname, NANOdir, MJDint, clearoutput=True, mkfiles=True
         
         #First restricting to the L-band
         files = sorted(glob.glob("%sfits/*.tfits" %DIR))
-	
+        print "%sfits/*.tfits" %DIR
+	print files
+        bandvalues=[]
 	lbandfiles = []
 	for f in files:
             bandvalue = subprocess.check_output("psredit -c rcvr:name %s | cut -d' ' -f2" %f, shell=True)
-	    if bandvalue == 'rcvr:name=L-wide\n':
+	    bandvalues.append(bandvalue)
+	    if bandvalue == 'rcvr:name=L-wide\n' or bandvalue == 'rcvr:name=lbw\n':
                 lbandfiles.append(f)
 
-	print lbandfiles
         #Then separating out MJD date to loop over
         rfarray=[]
         cfarray=[]
-        for f in lbandfiles:
-            col=str(f.split('_')[4])
+        for ff in lbandfiles:
+            col=str(ff.split('_')[4])
             if col == 'cal':
-                MJD = str(f.split('_')[1])
-                Scannum = str(f.split('_')[3])
+                MJD = str(ff.split('_')[1])
+                Scannum = str(ff.split('_')[3])
                 cfarray.append([MJD, Scannum])
             else:
-                MJD = str(f.split('_')[1])
-                Scannum = str(f.split('_')[3])
+                MJD = str(ff.split('_')[1])
+                Scannum = str(ff.split('_')[3])
 		if [MJD, Scannum] not in rfarray:
                     rfarray.append([MJD, Scannum])
 
