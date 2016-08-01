@@ -123,8 +123,17 @@ def jitterpipe(dirpath, psrname, NANOdir, MJDint, clearoutput=True, mkfiles=True
 
         printer("Adding separated pulses into cf and rf files")
         
-        #First separating out the MJDarray to loop over
+        #First restricting to the L-band
         files = sorted(glob.glob("%sfits/*.tfits" %DIR))
+
+	for f in files:
+            bandvalue = subprocess.check_output("psredit -c rcvr:name %s | cut -d' ' -f2" %f, shell=True)
+	    if bandvalue != 'rcvr:name=L-wide\n':
+                subprocess.call("rm %s" %f, shell=True)
+
+        #Then separating out MJD date to loop over
+        files = sorted(glob.glob("%sfits/*.tfits" %DIR))
+
         rfarray=[]
         cfarray=[]
         for f in files:
@@ -214,17 +223,17 @@ def jitterpipe(dirpath, psrname, NANOdir, MJDint, clearoutput=True, mkfiles=True
         printer("Making 10s-->160s, 256-->8 channel files")
         call("pam -e zap160F8 --settsub 160 --setnchn 8 %szap/*zap" %DIR)
 
-        #printer("Making 10s-->80s, 256-->8 channel files")
-        #call("pam -e zap80F8 --settsub 80 --setnchn 8 %szap/*zap" %DIR)
+        printer("Making 10s-->80s, 256-->8 channel files")
+        call("pam -e zap80F8 --settsub 80 --setnchn 8 %szap/*zap" %DIR)
 
-        #printer("Making 10s-->40s, 256-->8 channel files")
-        #call("pam -e zap40F8 --settsub 40 --setnchn 8 %szap/*zap" %DIR)
+        printer("Making 10s-->40s, 256-->8 channel files")
+        call("pam -e zap40F8 --settsub 40 --setnchn 8 %szap/*zap" %DIR)
 
-        #printer("Making 10s-->20s, 256-->8 channel files")
-        #call("pam -e zap20F8 --settsub 20 --setnchn 8 %szap/*zap" %DIR)
+        printer("Making 10s-->20s, 256-->8 channel files")
+        call("pam -e zap20F8 --settsub 20 --setnchn 8 %szap/*zap" %DIR)
         
-        #printer("Making 256-->8 channel, no tscrunch files")
-        #call("pam -e zapNTF8 --setnchn 8 %szap/*zap" %DIR)  
+        printer("Making 256-->8 channel, no tscrunch files")
+        call("pam -e zapNTF8 --setnchn 8 %szap/*zap" %DIR)  
         
         printer("Splitting complete")
 
@@ -257,14 +266,14 @@ def jitterpipe(dirpath, psrname, NANOdir, MJDint, clearoutput=True, mkfiles=True
             add_header('%stiming/%s_%s_NANOGrav_11y_320F8.tim' %(DIR, date, psrname), "MODE 1")
             call("pat -A FDM -e mcmc=0 -C chan -C subint -C snr -C wt -f 'tempo2 IPTA' -s %s %szap/puppi_%s_%s_????.11y.zap160F8 > %stiming/%s_%s_NANOGrav_11y_160F8.tim" %(TEMPLATEFILE, DIR, date, psrname, DIR, date, psrname))
             add_header('%stiming/%s_%s_NANOGrav_11y_160F8.tim' %(DIR, date, psrname), "MODE 1")
-            #call("pat -A FDM -e mcmc=0 -C chan -C subint -C snr -C wt -f 'tempo2 IPTA' -s %s %szap/puppi_%s_%s_????.11y.zap80F8 > %stiming/%s_%s_NANOGrav_11y_80F8.tim" %(TEMPLATEFILE, DIR, date, psrname, DIR, date, psrname))
-            #add_header('%stiming/%s_%s_NANOGrav_11y_80F8.tim' %(DIR, date, psrname), "MODE 1")
-            #call("pat -A FDM -e mcmc=0 -C chan -C subint -C snr -C wt -f 'tempo2 IPTA' -s %s %szap/puppi_%s_%s_????.11y.zap40F8 > %stiming/%s_%s_NANOGrav_11y_40F8.tim" %(TEMPLATEFILE, DIR, date, psrname, DIR, date, psrname))
-            #add_header('%stiming/%s_%s_NANOGrav_11y_40F8.tim' %(DIR, date, psrname), "MODE 1")
-            #call("pat -A FDM -e mcmc=0 -C chan -C subint -C snr -C wt -f 'tempo2 IPTA' -s %s %szap/puppi_%s_%s_????.11y.zap20F8 > %stiming/%s_%s_NANOGrav_11y_20F8.tim" %(TEMPLATEFILE, DIR, date, psrname, DIR, date, psrname))
-            #add_header('%stiming/%s_%s_NANOGrav_11y_20F8.tim' %(DIR, date, psrname), "MODE 1")
-            #call("pat -A FDM -e mcmc=0 -C chan -C subint -C snr -C wt -f 'tempo2 IPTA' -s %s %szap/puppi_%s_%s_????.11y.zapNTF8 > %stiming/%s_%s_NANOGrav_11y_NTF8.tim" %(TEMPLATEFILE, DIR, date, psrname, DIR, date, psrname))
-            #add_header('%stiming/%s_%s_NANOGrav_11y_NTF8.tim' %(DIR, date, psrname), "MODE 1")
+            call("pat -A FDM -e mcmc=0 -C chan -C subint -C snr -C wt -f 'tempo2 IPTA' -s %s %szap/puppi_%s_%s_????.11y.zap80F8 > %stiming/%s_%s_NANOGrav_11y_80F8.tim" %(TEMPLATEFILE, DIR, date, psrname, DIR, date, psrname))
+            add_header('%stiming/%s_%s_NANOGrav_11y_80F8.tim' %(DIR, date, psrname), "MODE 1")
+            call("pat -A FDM -e mcmc=0 -C chan -C subint -C snr -C wt -f 'tempo2 IPTA' -s %s %szap/puppi_%s_%s_????.11y.zap40F8 > %stiming/%s_%s_NANOGrav_11y_40F8.tim" %(TEMPLATEFILE, DIR, date, psrname, DIR, date, psrname))
+            add_header('%stiming/%s_%s_NANOGrav_11y_40F8.tim' %(DIR, date, psrname), "MODE 1")
+            call("pat -A FDM -e mcmc=0 -C chan -C subint -C snr -C wt -f 'tempo2 IPTA' -s %s %szap/puppi_%s_%s_????.11y.zap20F8 > %stiming/%s_%s_NANOGrav_11y_20F8.tim" %(TEMPLATEFILE, DIR, date, psrname, DIR, date, psrname))
+            add_header('%stiming/%s_%s_NANOGrav_11y_20F8.tim' %(DIR, date, psrname), "MODE 1")
+            call("pat -A FDM -e mcmc=0 -C chan -C subint -C snr -C wt -f 'tempo2 IPTA' -s %s %szap/puppi_%s_%s_????.11y.zapNTF8 > %stiming/%s_%s_NANOGrav_11y_NTF8.tim" %(TEMPLATEFILE, DIR, date, psrname, DIR, date, psrname))
+            add_header('%stiming/%s_%s_NANOGrav_11y_NTF8.tim' %(DIR, date, psrname), "MODE 1")
         
 #         printer("Writing master tim file for 10s subint + 8 channel files")     
 #         call("pat -A FDM -e mcmc=0 -C chan -C subint -C snr -C wt -f 'tempo2 IPTA' -s %s %szap/*.zapNTF8 > %stiming/master_%s_NANOGrav_11y_NTF8.tim" %(TEMPLATEFILE, DIR, DIR, psrname))
@@ -300,32 +309,32 @@ def jitterpipe(dirpath, psrname, NANOdir, MJDint, clearoutput=True, mkfiles=True
 #         call("mv resid2.tmp %sproducts/resid_80F8.tmp" %DIR)
        
         #This runs tempo on 320s + 8 channel files, recursively using the daily tim files
-#         print "tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_320F8.tim" %(PARFILE, DIR, date, psrname) 
-        call("(cd %s; tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_320F8.tim)" %(DIR, PARFILE, DIR, date, psrname) )
-        call("mv %sresid2.tmp %sproducts/%s_resid_%s_320F8.tmp" %(DIR, DIR, psrname, date))
+        print "tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_320F8.tim" %(PARFILE, DIR, date, psrname) 
+#        call("(cd %s; tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_320F8.tim)" %(DIR, PARFILE, DIR, date, psrname) )
+#        call("mv %sresid2.tmp %sproducts/%s_resid_%s_320F8.tmp" %(DIR, DIR, psrname, date))
 
         #This runs tempo on 160s + 8 channel files, recursively using the daily tim files
-#         print "tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_160F8.tim" %(PARFILE, DIR, date, psrname) 
-        call("(cd %s; tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_160F8.tim)" %(DIR, PARFILE, DIR, date, psrname) )
-        call("mv %sresid2.tmp %sproducts/%s_resid_%s_160F8.tmp" %(DIR, DIR, psrname, date))
+        print "tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_160F8.tim" %(PARFILE, DIR, date, psrname) 
+#         call("(cd %s; tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_160F8.tim)" %(DIR, PARFILE, DIR, date, psrname) )
+#         call("mv %sresid2.tmp %sproducts/%s_resid_%s_160F8.tmp" %(DIR, DIR, psrname, date))
 
         #This runs tempo on 80s + 8 channel files, recursively using the daily tim files
-#         print "tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_80F8.tim" %(PARFILE, DIR, date, psrname) 
+        print "tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_80F8.tim" %(PARFILE, DIR, date, psrname) 
 #         call("(cd %s; tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_80F8.tim)" %(DIR, PARFILE, DIR, date, psrname) )
 #         call("mv %sresid2.tmp %sproducts/%s_resid_%s_80F8.tmp" %(DIR, DIR, psrname, date))
 
         #This runs tempo on 40s + 8 channel files, recursively using the daily tim files
-#         print "tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_40F8.tim" %(PARFILE, DIR, date, psrname) 
+        print "tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_40F8.tim" %(PARFILE, DIR, date, psrname) 
 #         call("(cd %s; tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_40F8.tim)" %(DIR, PARFILE, DIR, date, psrname) )
 #         call("mv %sresid2.tmp %sproducts/%s_resid_%s_40F8.tmp" %(DIR, DIR, psrname, date))
 
         #This runs tempo on 10s + 8 channel files, recursively using the daily tim files
-#         print "tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_20F8.tim" %(PARFILE, DIR, date, psrname) 
+        print "tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_20F8.tim" %(PARFILE, DIR, date, psrname) 
 #         call("(cd %s; tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_20F8.tim)" %(DIR, PARFILE, DIR, date, psrname) )
 #         call("mv %sresid2.tmp %sproducts/%s_resid_%s_20F8.tmp" %(DIR, DIR, psrname, date))
 
         #This runs tempo on 10s + 8 channel files, recursively using the daily tim files
-#         print "tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_NTF8.tim" %(PARFILE, DIR, date, psrname) 
+        print "tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_NTF8.tim" %(PARFILE, DIR, date, psrname) 
 #         call("(cd %s; tempo -G -f %s %stiming/%s_%s_NANOGrav_11y_NTF8.tim)" %(DIR, PARFILE, DIR, date, psrname) )
 #         call("mv %sresid2.tmp %sproducts/%s_resid_%s_NTF8.tmp" %(DIR, DIR, psrname, date))
         
