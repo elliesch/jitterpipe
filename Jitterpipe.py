@@ -119,14 +119,20 @@ def jitterpipe(dirpath, psrname, NANOdir, MJDint, clearoutput=True, mkfiles=True
         call("pam -u %sfits -e tfits --settsub 10 %s/%s.fits" %(DIR, NANOdir, MJDarg))
 	letter=psrname[0]
         coords=psrname[1:]
+
+        #add the letter back in front of the psrname   
         call("rename _%s _%s%s %sfits/*_????+*.tfits" %(coords, letter, coords, DIR))
 
         printer("Adding separated pulses into cf and rf files")
         
-        #First restricting to the L-band
+        #First restricting to the L-band and fixing scancol length
         files = sorted(glob.glob("%sfits/*.tfits" %DIR))
-        print "%sfits/*.tfits" %DIR
-	print files
+        for ff in files:
+            scancol=str(ff.split('_'[3]))
+            if len(scancol) > 4:
+                newscancol=scancol[-4:]
+                call("rename _%s _%s %s" %(scancol, newscancol, ff))
+
         bandvalues=[]
 	lbandfiles = []
 	for f in files:
