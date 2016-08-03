@@ -133,6 +133,7 @@ def jitterpipe(dirpath, psrname, NANOdir, MJDint, clearoutput=True, mkfiles=True
                 newscancol=scancol[-4:]
                 call("rename _%s _%s %s" %(scancol, newscancol, ff))
 
+        files = sorted(glob.glob("%sfits/*.tfits" %DIR))
         bandvalues=[]
 	lbandfiles = []
 	for f in files:
