@@ -128,7 +128,7 @@ def jitterpipe(dirpath, psrname, NANOdir, MJDint, clearoutput=True, mkfiles=True
         #First restricting to the L-band and fixing scancol length
         files = sorted(glob.glob("%sfits/*.tfits" %DIR))
         for ff in files:
-            scancol=str(ff.split('_'[3]))
+            scancol=str(ff.split('_')[3])
             if len(scancol) > 4:
                 newscancol=scancol[-4:]
                 call("rename _%s _%s %s" %(scancol, newscancol, ff))
@@ -146,6 +146,7 @@ def jitterpipe(dirpath, psrname, NANOdir, MJDint, clearoutput=True, mkfiles=True
         cfarray=[]
         for ff in lbandfiles:
             col=str(ff.split('_')[4])
+            print col
             if col == 'cal':
                 MJD = str(ff.split('_')[1])
                 Scannum = str(ff.split('_')[3])
