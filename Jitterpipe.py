@@ -5,7 +5,7 @@ def jitterpipe(dirpath, psrname, NANOdir, MJDint, clearoutput=True, mkfiles=True
     Jitterpipe
     6/27/2016
 
-    Modified version of Michael Lam's pipeline by Ellianna Schwab with help from Michael Lam and Scott Ransom.
+    High time resolution pipeline by Ellianna Schwab with help from Michael Lam and Scott Ransom.
     Michael Lam's original pipeline is here: http://astro.cornell.edu/~mlam/files/pipeline.py
 
     Reduction pipeline for any NANOGrav input data. Time scrunches to two intervals for jitter analysis.
